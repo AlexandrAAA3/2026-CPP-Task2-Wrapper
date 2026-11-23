@@ -11,7 +11,6 @@
 template <typename Class, typename ReturnType, typename... Args>
 class Wrapper {
 public:
-    // Разрешаем методам быть const (обратите внимание на const в конце)
     using MethodPtr = ReturnType (Class::*)(Args...) const;
     using Overrides = std::unordered_map<std::string, std::string>;
     using Executor  = std::function<std::string(const Overrides&)>;
@@ -46,7 +45,6 @@ private:
     template <std::size_t... I>
     std::string do_invoke(const Overrides& ov, std::index_sequence<I...>) {
         if constexpr (std::is_void_v<ReturnType>) {
-            // std::invoke умеет работать с указателями на методы
             std::invoke(method_, obj_, resolve_argument<I>(ov)...);
             return {};
         } else {
