@@ -36,15 +36,17 @@ private:
         const auto& [name, def] = std::get<I>(defaults_);
         auto it = ov.find(name);
         
+        std::string result_str;
         if (it == ov.end()) {
             if constexpr (std::is_same_v<CleanType, std::string>) {
-                return std::string(def);
+                result_str = def; 
             } else {
-                return utils::to_display(def);
+                result_str = utils::to_display(def);
             }
         } else {
-            return it->second;
+            result_str = it->second; 
         }
+        return result_str;
     }
 
     template <std::size_t... I>
