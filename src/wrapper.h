@@ -7,8 +7,7 @@
 #include <unordered_map>
 #include <utility>
 #include <memory>
-
-#include "string_utils.hpp"
+#include "string_utils.h"
 
 template <typename Class, typename ReturnType, typename... Args>
 class Wrapper {
