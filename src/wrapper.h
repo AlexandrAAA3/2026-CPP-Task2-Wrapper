@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <memory>
 #include <vector>
+#include <utility>
+#include <type_traits>
 #include "string_utils.h"
 
 template <typename Class, typename ReturnType, typename... Args>
@@ -15,7 +17,9 @@ public:
     using Executor  = std::function<std::string(const Overrides&)>;
 
     Wrapper(MethodPtr method, std::tuple<std::string, Args>... defaults)
-        : method_(method), defaults_(defaults...) {}
+        : method_(method) {
+        (defaults_.emplace_back(std::get<0>(defaults), utils::to_display(std::get<1>(defaults))), ...);
+    }
 
     [[nodiscard]] Executor make_executor() {
         return [this](const Overrides& ov) -> std::string {
@@ -25,27 +29,17 @@ public:
 
 private:
     MethodPtr method_;
-    std::tuple<std::tuple<std::string, Args>...> defaults_;
+    std::vector<std::pair<std::string, std::string>> defaults_;
 
     template <std::size_t I>
     std::string resolve_argument(const Overrides& ov) {
         using CleanType = std::decay_t<std::tuple_element_t<I, std::tuple<Args...>>>;
-
-        auto default_pair = std::get<I>(defaults_);
-        std::string name = std::get<0>(default_pair);
-        CleanType def = std::get<1>(default_pair);
-
+        const auto& [name, def_str] = defaults_[I];
         auto it = ov.find(name);
-
         if (it == ov.end()) {
-            if constexpr (std::is_same_v<CleanType, std::string>) {
-                return std::string(def.c_str());
-            } else {
-                return utils::to_display(def);
-            }
-        } else {
-            return std::string(it->second.c_str());
+            return def_str; 
         }
+        return it->second;
     }
 
     template <std::size_t... I>
@@ -56,7 +50,7 @@ private:
         } else {
             auto result = method_(resolve_argument<I>(ov)...);
             if constexpr (std::is_same_v<ReturnType, std::string>) {
-                return std::string(result.c_str());
+                return result;
             } else {
                 return utils::to_display(result);
             }
