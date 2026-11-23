@@ -35,22 +35,22 @@ int main() {
 
     std::string input = "hello world. this is a test. is it working?";
 
-    // Используем статические словари, чтобы они жили всё время выполнения программы
-    const std::unordered_map<std::string, std::string> args1 = {{"text", input}, {"target", "world"}, {"replacement", "C++"}};
+    // Сохраняем словари в переменные, чтобы они жили всё время вызова
+    std::unordered_map<std::string, std::string> args1 = {{"text", input}, {"target", "world"}, {"replacement", "C++"}};
     std::cout << engine.execute("replace", args1) << "\n\n";
 
-    const std::unordered_map<std::string, std::string> args2 = {{"text", input}, {"phrase", "hello"}};
+    std::unordered_map<std::string, std::string> args2 = {{"text", input}, {"phrase", "hello"}};
     std::cout << engine.execute("find", args2) << "\n\n";
 
-    const std::unordered_map<std::string, std::string> args3 = {{"text", input}, {"phrase", "xyz"}};
+    std::unordered_map<std::string, std::string> args3 = {{"text", input}, {"phrase", "xyz"}};
     std::cout << engine.execute("find", args3) << "\n\n";
 
-    const std::unordered_map<std::string, std::string> args4 = {{"text", input}};
+    std::unordered_map<std::string, std::string> args4 = {{"text", input}};
     std::cout << engine.execute("cap_words", args4) << "\n\n";
     std::cout << engine.execute("cap_sentences", args4) << "\n\n";
     std::cout << engine.execute("number", args4) << "\n\n";
 
-    const std::unordered_map<std::string, std::string> args5 = {{"text", input}, {"target", "test"}};
+    std::unordered_map<std::string, std::string> args5 = {{"text", input}, {"target", "test"}};
     std::cout << engine.execute("replace", args5) << "\n";
 
     return 0;
