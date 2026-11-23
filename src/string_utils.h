@@ -40,7 +40,7 @@ namespace utils {
             }
         }
 
-        std::size_t begin {};
+        std::size_t begin{};
         while (begin < current.size() && std::isspace(static_cast<unsigned char>(current[begin]))) ++begin;
         if (begin < current.size()) sentences.push_back(current.substr(begin));
 
