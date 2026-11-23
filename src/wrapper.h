@@ -33,20 +33,21 @@ private:
     std::string resolve_argument(const Overrides& ov) { 
         using CleanType = std::decay_t<std::tuple_element_t<I, std::tuple<Args...>>>; 
         
-        const auto& [name, def] = std::get<I>(defaults_);
+        auto default_pair = std::get<I>(defaults_); 
+        const std::string& name = std::get<0>(default_pair);
+        const CleanType& def = std::get<1>(default_pair);
+        
         auto it = ov.find(name);
         
-        std::string result_str;
         if (it == ov.end()) {
             if constexpr (std::is_same_v<CleanType, std::string>) {
-                result_str = def; 
+                return def; 
             } else {
-                result_str = utils::to_display(def);
+                return utils::to_display(def);
             }
         } else {
-            result_str = it->second; 
+            return it->second; 
         }
-        return result_str;
     }
 
     template <std::size_t... I>
