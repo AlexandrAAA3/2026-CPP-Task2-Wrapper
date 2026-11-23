@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.15)
+project(wrapper_engine CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_compile_options(-Wall -Wextra -Werror -Wpedantic)
+
+add_executable(app
+        src/main.cpp
+        src/text_processor.cpp
+)
+target_include_directories(app PRIVATE src)
+
+# Отключаем назойливый чек clang-tidy, который ломает указатели на методы
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    target_compile_options(app PRIVATE -Wno-error=unused-function)
+endif()
